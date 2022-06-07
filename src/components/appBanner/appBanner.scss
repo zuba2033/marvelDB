@@ -1,0 +1,19 @@
+.appbanner {
+    height: 100px;
+    background-color: #232222;;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 45px;
+    padding-right: 25px;
+    &__block {
+        display: flex;
+        align-items: center;
+        column-gap: 83px;
+    }
+    &__text {
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 28px;
+        color: #fff;
+    }
+}
