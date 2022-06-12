@@ -1,0 +1,31 @@
+.comicslist {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 45px;
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    &__item {
+        max-width: 225px;
+        margin-bottom: 55px;
+    }
+    &__item-title {
+        margin-top: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+    }
+    &__item-price {
+        margin-top: 5px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+        color: rgba(0, 0, 0, 0.6);
+    }
+    .button.button__long {
+        margin-top: 0px;
+    }
+}

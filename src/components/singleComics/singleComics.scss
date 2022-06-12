@@ -1,0 +1,39 @@
+@import '../../style/variables.scss';
+
+
+.singlecomics {
+    margin-top: 50px;
+    display: flex;
+    position: relative;
+    &__title {
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 26px;
+    }
+    &__text {
+        max-width: 550px;
+    }
+    img {
+        margin-right: 50px;
+    }
+    a {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 21px;
+    }
+    p {
+        margin-top: 25px;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 21px;
+    }
+    &__price {
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 28px;
+        color: $main-color;
+    }
+}
