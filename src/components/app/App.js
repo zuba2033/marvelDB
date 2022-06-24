@@ -14,12 +14,13 @@ import decoration from '../../resourses/img/vision.png';
 class App extends Component {
 
   state = {
-    charId: undefined,
+    charId: null,
   }
 
-  onItemClick = (id) => {
+  onItemSelected = (id) => {
     this.setState({charId: id})
   }
+
 
   render() {
 
@@ -34,7 +35,7 @@ class App extends Component {
           </ErrorBoundary>
           <div className="char-content">
             <ErrorBoundary>
-              <CharList onItemClick={this.onItemClick}/>
+              <CharList onItemSelected={this.onItemSelected}/>
             </ErrorBoundary>
             <div className="char-content__rightSide">
               <ErrorBoundary>
@@ -43,7 +44,7 @@ class App extends Component {
             </div>
   
           </div>
-          <img src={decoration} alt="" className="decoration" />
+          <img src={decoration} alt="" className={"decoration"} />
         </main>
         {/* <AppBanner/>
         <ComicsList/>

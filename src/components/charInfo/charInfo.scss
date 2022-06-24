@@ -2,6 +2,9 @@
 
 .charinfo {
     width: 425px;
+    position: sticky;
+    top: 20px;
+    left: 0;
     &__wrap {
         width: 100%;
         background: #FFFFFF;
