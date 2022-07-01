@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
 import AppHeader from '../appHeader/AppHeader';
 import RandomChar from '../randomChar/RandomChar';
@@ -11,50 +11,42 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 
 import decoration from '../../resourses/img/vision.png';
 
-class App extends Component {
+const App = () => {
 
-  state = {
-    charId: null,
+  const [charId, setChar] = useState(null);
+
+  const onItemSelected = (id) => {
+    setChar(id);
   }
 
-  onItemSelected = (id) => {
-    this.setState({charId: id})
-  }
-
-
-  render() {
-
-    const {charId} = this.state;
-
-    return (
-      <div className="app">
-        <AppHeader/>
-        <main>
+  return (
+    <div className="app">
+      <AppHeader/>
+      <main>
+        <ErrorBoundary>
+          <RandomChar/>
+        </ErrorBoundary>
+        <div className="char-content">
           <ErrorBoundary>
-            <RandomChar/>
+            <CharList onItemSelected={onItemSelected}/>
           </ErrorBoundary>
-          <div className="char-content">
+          <div className="char-content__rightSide">
             <ErrorBoundary>
-              <CharList onItemSelected={this.onItemSelected}/>
+              <CharInfo charId={charId}/>
             </ErrorBoundary>
-            <div className="char-content__rightSide">
-              <ErrorBoundary>
-                <CharInfo charId={charId}/>
-              </ErrorBoundary>
-            </div>
-  
           </div>
-          <img src={decoration} alt="" className={"decoration"} />
-        </main>
-        {/* <AppBanner/>
-        <ComicsList/>
-        <AppBanner/>
-        <SingleComics/> */}
-        
-      </div>
-    );
-  }
-  
+
+        </div>
+        <img src={decoration} alt="" className={"decoration"} />
+      </main>
+      {/* <AppBanner/>
+      <ComicsList/>
+      <AppBanner/>
+      <SingleComics/> */}
+      
+    </div>
+  )
+
 }
 
 export default App;
