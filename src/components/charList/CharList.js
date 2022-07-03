@@ -21,18 +21,29 @@ const CharList = (props) => {
 
     useEffect(() => {
         onRequest();
+        // eslint-disable-next-line
     }, [])
 
-    useEffect(() => {
-        onScrollToBottom();
-    }, [])
+    // useEffect(() => {
+    //     const onScroll = () => {
+    //         const client = document.documentElement;
+    //         console.log(offset);
+    //         if (client.scrollTop !== 0 && client.scrollTop === (client.scrollHeight - client.clientHeight)) {
+    //             onRequest(offset);
+    //         }
+    //     }
+    //     window.addEventListener('scroll', () => onScroll);
+    //     return () => window.removeEventListener("scroll", onScroll);
+        
+    // }, [offset]);
+
 
     const onRequest = (offset) => {
         onCharListLoading();
         marvelService
-        .getAllCharacters(offset)
-        .then(onCharListLoaded)
-        .catch(onError);
+            .getAllCharacters(offset)
+            .then(onCharListLoaded)
+            .catch(onError);
     }
 
     const onCharListLoading = () => {
@@ -53,15 +64,6 @@ const CharList = (props) => {
     const onError = () => {
         setLoading(false);
         setError(true);
-    }
-
-    const onScrollToBottom = () => {
-        const client = document.documentElement;
-        window.addEventListener('scroll', () => {
-            if (client.scrollTop !== 0 && client.scrollTop === client.scrollHeight - client.clientHeight) {
-                onRequest(offset);
-            }
-        })
     }
 
     const itemRefs = useRef([]);
@@ -108,29 +110,28 @@ const CharList = (props) => {
         )
     }
 
-        const itemList = renderItems(items);
+    const itemList = renderItems(items);
 
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? itemList : null;
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error) ? itemList : null;
 
-        const btnStyle = charEnd ? {display: 'none'} : {display: 'block'};
+    const btnStyle = charEnd ? {display: 'none'} : {display: 'block'};
 
-        return (
-            <div className="charlist">
-                {errorMessage}
-                {spinner}
-                {content}
-                <button  
-                className="button button__main button__long"
-                disabled={newItemLoading}
-                style={btnStyle}
-                onClick={() => onRequest(offset)}>
-                    <div className="inner">{newItemLoading ? 'loading...' : 'load more'}</div>
-                </button>
-            </div>
-        )
-    
+    return (
+        <div className="charlist">
+            {errorMessage}
+            {spinner}
+            {content}
+            <button  
+            className="button button__main button__long"
+            disabled={newItemLoading}
+            style={btnStyle}
+            onClick={() => onRequest(offset)}>
+                <div className="inner">{newItemLoading ? 'loading...' : 'load more'}</div>
+            </button>
+        </div>
+    )
 }
 
 CharList.propTypes = {
