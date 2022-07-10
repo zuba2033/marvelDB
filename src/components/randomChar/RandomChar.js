@@ -3,40 +3,26 @@ import './randomChar.scss';
 import { useState, useEffect } from 'react';
 
 import mjolnir from '../../resourses/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const RandomChar = () => {
 
-    const [char, setChar] = useState({}),
-        [loading, setLoading] = useState(true),
-        [error, setError] = useState(false);
+    const [char, setChar] = useState({});
 
-    const marvelService = new MarvelService();
+
+    const {loading, error, getCharacter, clearError} = useMarvelService();
 
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoading(false);
-    }
-
-    const onCharLoading = () => {
-        setLoading(true);
-    }
-
-    const onError = (res) => {
-        setLoading(false);
-        setError(true);
     }
 
     const updateChar = () => {
-        setError(false);
+        clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        onCharLoading();
-        marvelService
-            .getCharacter(id)
+        getCharacter(id)
             .then(onCharLoaded)
-            .catch(onError);
     }
 
     useEffect(() => {
@@ -73,11 +59,14 @@ const View = ({char}) => {
 
     const {thumbnail, name, description, homepage, wiki} = char;
 
-    const objectFit = thumbnail.includes('not_available') ? {objectFit: "contain"} : {objectFit: "cover"};
+    let imgStyle = {'objectFit' : 'cover'};
+    if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+        imgStyle = {'objectFit' : 'contain'};
+    }
 
     return (
         <div className="randomChar__block">
-            <img src={thumbnail} alt="character_img" className="randomChar__img" style={objectFit}/>
+            <img src={thumbnail} alt="character_img" className="randomChar__img" style={imgStyle}/>
             <div className="randomChar__info">
                 <div className="randomChar__title">{name}</div>
                 <div className="randomChar__descr">

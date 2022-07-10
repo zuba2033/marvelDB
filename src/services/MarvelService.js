@@ -1,33 +1,34 @@
 
 
-class MarvelService {
+import { useHttp } from "../hooks/http.hook";
 
-    _apiBase = 'https://gateway.marvel.com:443/v1/public/';
-    _apiKey = 'apikey=f09e10b3c42de2c120290b4a4f1abcf2';
-    _baseCharOffset = 210;
-    _totalCharacters = 0;
+const useMarvelService = () => {
 
-    getResource = async (url) => {
-        let res = await fetch(url); 
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`); 
-        }
-        return await res.json();
+    const {loading, error, request, clearError} = useHttp();
+
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    const _apiKey = 'apikey=f09e10b3c42de2c120290b4a4f1abcf2';
+    const _baseCharOffset = 210;
+    const _baseComicsOffset = null;
+
+
+    const getAllCharacters = async (charOffset = _baseCharOffset) => {
+        let totalCharacters;
+        const res = await request(`${_apiBase}characters?limit=9&offset=${charOffset}&${_apiKey}`);
+        totalCharacters = res.data.total;
+        return [totalCharacters, res.data.results.map(_transformCharacterData)];
     }
 
-    getAllCharacters = async (charOffset = this._baseCharOffset) => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=${charOffset}&${this._apiKey}`);
-        this._totalCharacters = res.data.total
-        return res.data.results.map(this._transformCharacterData);
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacterData(res.data.results[0]);
+    }
+
+    const getComics = async (comicsOffset = _baseComicsOffset) => {
 
     }
 
-    getCharacter = async (id) => {
-        const res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharacterData(res.data.results[0]);
-    }
-
-    _transformCharacterData = (char) => {
+    const _transformCharacterData = (char) => {
         return {
             id: char.id,
             name: char.name,
@@ -39,6 +40,14 @@ class MarvelService {
         }
     }
 
+    return {
+        loading,
+        error,
+        getAllCharacters,
+        getCharacter,
+        clearError
+    }
+
 }
 
-export default MarvelService;
+export default useMarvelService;
