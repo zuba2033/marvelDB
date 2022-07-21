@@ -9,13 +9,11 @@ const useMarvelService = () => {
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey = 'apikey=f09e10b3c42de2c120290b4a4f1abcf2';
     const _baseCharOffset = 210;
-    const _baseComicsOffset = null;
-
+    const _baseComicsOffset = 500;
 
     const getAllCharacters = async (charOffset = _baseCharOffset) => {
-        let totalCharacters;
         const res = await request(`${_apiBase}characters?limit=9&offset=${charOffset}&${_apiKey}`);
-        totalCharacters = res.data.total;
+        const totalCharacters = res.data.total;
         return [totalCharacters, res.data.results.map(_transformCharacterData)];
     }
 
@@ -25,7 +23,26 @@ const useMarvelService = () => {
     }
 
     const getComics = async (comicsOffset = _baseComicsOffset) => {
+        const res = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${comicsOffset}&${_apiKey}`);
+        const totalComics = res.data.total;
+        return [totalComics, res.data.results.map(_transformComicsData)];
+    }
 
+    const getSingleComic = async (id) => {
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComicsData(res.data.results[0]);
+    }
+
+    const _transformComicsData = (comics) => {
+        return {
+            id: comics.id,
+            title: comics.title,
+            description: comics.description || 'There is no description',
+            pageCount: comics.pageCount ? `${comics.pageCount} p.` : 'No information about the number of pages',
+            thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+            language: comics.textObjects.language || 'en-us',
+            price: comics.prices[0].price ? `${comics.prices[0].price}$` : 'not available'
+        }
     }
 
     const _transformCharacterData = (char) => {
@@ -45,7 +62,9 @@ const useMarvelService = () => {
         error,
         getAllCharacters,
         getCharacter,
-        clearError
+        getComics,
+        clearError,
+        getSingleComic
     }
 
 }

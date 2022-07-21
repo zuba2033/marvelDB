@@ -1,51 +1,30 @@
-import { useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
 
 import AppHeader from '../appHeader/AppHeader';
-import RandomChar from '../randomChar/RandomChar';
-import CharList from '../charList/CharList';
-import CharInfo from '../charInfo/CharInfo';
+import { MainPage, ComicsPage, Page404, SingleComics } from '../pages';
 
-import ErrorBoundary from '../errorBoundary/ErrorBoundary';
-// import AppBanner from '../appBanner/AppBanner';
-// import ComicsList from '../comicsList/ComicsList';
 // import SingleComics from '../singleComics/SingleComics';
-
-import decoration from '../../resourses/img/vision.png';
 
 const App = () => {
 
-  const [charId, setChar] = useState(null);
-
-  const onItemSelected = (id) => {
-    setChar(id);
-  }
-
   return (
-    <div className="app">
-      <AppHeader/>
-      <main>
-        <ErrorBoundary>
-          <RandomChar/>
-        </ErrorBoundary>
-        <div className="char-content">
-          <ErrorBoundary>
-            <CharList onItemSelected={onItemSelected}/>
-          </ErrorBoundary>
-          <div className="char-content__rightSide">
-            <ErrorBoundary>
-              <CharInfo charId={charId}/>
-            </ErrorBoundary>
-          </div>
-
-        </div>
-        <img src={decoration} alt="" className={"decoration"} />
-      </main>
-      {/* <AppBanner/>
-      <ComicsList/>
-      <AppBanner/>
-      <SingleComics/> */}
-      
-    </div>
+    <Router> 
+      <div className="app">
+        <AppHeader/>
+        <main>
+          <Routes>
+            <Route path='/' element={<MainPage/>}/>
+            <Route path='/comics' element={<ComicsPage/>}/>
+            <Route path='/comics/:comicId' element={<SingleComics/>}/>
+            <Route path='*' element={<Page404/>}/>
+          </Routes>
+        </main>
+      </div>
+    </Router>
   )
 
 }

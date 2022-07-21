@@ -1,4 +1,4 @@
-@import '../../style/variables.scss';
+@import '../../../style/variables.scss';
 
 
 .singlecomics {
@@ -15,6 +15,9 @@
     }
     img {
         margin-right: 50px;
+        width: 300px;
+        height: 450px;
+        object-fit: cover;
     }
     a {
         position: absolute;
@@ -30,10 +33,10 @@
         font-size: 18px;
         line-height: 21px;
     }
-    &__price {
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 28px;
-        color: $main-color;
-    }
+}
+.singlecomics .singlecomics__price {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28px;
+    color: $main-color;
 }

@@ -1,64 +1,39 @@
 import './charList.scss';
 
-import { useState, useEffect, useRef} from 'react';
+import {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
+import { useLists } from '../../hooks/useLists.hook';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = (props) => {
 
-    const [items, setItems] = useState([]),
-        [newItemLoading, setNewItemLoading] = useState(false),
-        [offset, setOffset] = useState(210),
-        [charEnd, setCharEnd] = useState(false);
+    const {items, newItemLoading, firstLoading, offset, listEnd, onRequest, onScroll, endOfPage, itemRefs, focusOnItem} = useLists(210, 9);
 
+    const {error} = useMarvelService();
 
-    const {loading, error, getAllCharacters} = useMarvelService();
 
     useEffect(() => {
-        onRequest(offset, true);
+        onRequest('Characters', offset);
         // eslint-disable-next-line
     }, [])
 
-    // useEffect(() => {
-    //     const onScroll = () => {
-    //         const client = document.documentElement;
-    //         console.log(offset);
-    //         if (client.scrollTop !== 0 && client.scrollTop === (client.scrollHeight - client.clientHeight)) {
-    //             onRequest(offset);
-    //         }
-    //     }
-    //     window.addEventListener('scroll', () => onScroll);
-    //     return () => window.removeEventListener("scroll", onScroll);
-        
-    // }, [offset]);
+    useEffect(() => {
+        if (endOfPage) {
+            onRequest('Characters', offset);
+        }
+        // eslint-disable-next-line
+      }, [endOfPage])
 
+    useEffect(() => {
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+        // eslint-disable-next-line
+      }, []);
 
-    const onRequest = (offset, initial) => {
-        initial ? setNewItemLoading(false) : setNewItemLoading(true);
-        getAllCharacters(offset)
-            .then(onCharListLoaded);
-    }
-
-
-    const onCharListLoaded = (newItems) => {
-        let ended = newItems[0] - offset <= 9;
-        setItems(items => [...items, ...newItems[1]]);
-        setNewItemLoading(false);
-        setOffset(offset => offset + 9);
-        setCharEnd(ended);
-    }
-
-
-    const itemRefs = useRef([]);
-
-    const focusOnItem = (id) => {
-        itemRefs.current.forEach(item => item.classList.remove('charlist__item-selected'));
-        itemRefs.current[id].classList.add('charlist__item-selected');
-        itemRefs.current[id].focus();
-    }
 
     function renderItems(arr) {
 
@@ -99,9 +74,9 @@ const CharList = (props) => {
     const itemList = renderItems(items);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemLoading ? <Spinner/> : null;
+    const spinner = firstLoading ? <Spinner/> : null;
 
-    const btnStyle = charEnd ? {display: 'none'} : {display: 'block'};
+    const btnStyle = listEnd ? {display: 'none'} : {display: 'block'};
 
     return (
         <div className="charlist">
@@ -112,7 +87,7 @@ const CharList = (props) => {
             className="button button__main button__long"
             disabled={newItemLoading}
             style={btnStyle}
-            onClick={() => onRequest(offset)}>
+            onClick={() => onRequest('Characters', offset)}>
                 <div className="inner">{newItemLoading ? 'loading...' : 'load more'}</div>
             </button>
         </div>
