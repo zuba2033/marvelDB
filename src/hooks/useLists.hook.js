@@ -8,7 +8,8 @@ export const useLists = (initialOffset, itemsInList) => {
         [offset, setOffset] = useState(initialOffset),
         [listEnd, setListEnd] = useState(false),
         [endOfPage, setEndOfPage] = useState(false),
-        [firstLoading, setFirstLoading] = useState(true);
+        [firstLoading, setFirstLoading] = useState(true),
+        [itemsLoaded, setItemsLoaded] = useState(false);
 
     const {getAllCharacters, getComics} = useMarvelService();
 
@@ -35,6 +36,7 @@ export const useLists = (initialOffset, itemsInList) => {
         setFirstLoading(false);
         setOffset(offset => offset + itemsInList);
         setListEnd(ended);
+        setItemsLoaded(true);
     }
 
     const onScroll = () => {
@@ -56,7 +58,18 @@ export const useLists = (initialOffset, itemsInList) => {
 
 
     return {
-        items, newItemLoading, offset, listEnd, onRequest, onListLoaded, onScroll, endOfPage, firstLoading, itemRefs, focusOnItem
+        items, 
+        itemsLoaded, 
+        newItemLoading, 
+        offset, 
+        listEnd, 
+        onRequest, 
+        onListLoaded, 
+        onScroll, 
+        endOfPage, 
+        firstLoading, 
+        itemRefs, 
+        focusOnItem
     }
 
 }

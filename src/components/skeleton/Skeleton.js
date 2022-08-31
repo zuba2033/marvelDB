@@ -1,6 +1,8 @@
 import './skeleton.scss';
 
 const Skeleton = () => {
+
+
  return (
     <div className="pulse skeleton">
         <div className="pulse skeleton__wrap">
