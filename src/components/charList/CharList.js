@@ -1,6 +1,7 @@
 import './charList.scss';
 
 import {useEffect} from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
@@ -11,9 +12,11 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = (props) => {
 
-    const {items, newItemLoading, firstLoading, offset, listEnd, onRequest, onScroll, endOfPage, itemRefs, focusOnItem} = useLists(210, 9);
+    const {items, itemsLoaded, newItemLoading, firstLoading, offset, listEnd, onRequest, onScroll, endOfPage, itemRefs, focusOnItem} = useLists(210, 9);
 
     const {error} = useMarvelService();
+
+    const transitionDuration = 1000;
 
 
     useEffect(() => {
@@ -45,28 +48,35 @@ const CharList = (props) => {
             }
             
             return (
-            <li className={'charlist__item'} 
-                tabIndex={0}
-                ref={el => itemRefs.current[i] = el}
-                key={item.id} 
-                onClick={() => {
-                    props.onItemSelected(item.id); 
-                    focusOnItem(i);
-                }}
-                onKeyPress={(e) => {
-                    if (e.key === ' ' || e.key === "Enter") {
-                        props.onItemSelected(item.id);
-                        focusOnItem(i);
-                    }
-                }}>
-                <img src={item.thumbnail} alt={item.name} style={styleImg} />
-                <div className="charlist__name">{item.name}</div>
-            </li>
+                <CSSTransition
+                    key={item.id} 
+                    in={itemsLoaded}
+                    timeout={transitionDuration}
+                    classNames='charlist__item'>
+                    <li className={'charlist__item'} 
+                        tabIndex={0}
+                        ref={el => itemRefs.current[i] = el}
+                        onClick={() => {
+                            props.onItemSelected(item.id); 
+                            focusOnItem(i);
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.key === ' ' || e.key === "Enter") {
+                                props.onItemSelected(item.id);
+                                focusOnItem(i);
+                            }
+                        }}>
+                        <img src={item.thumbnail} alt={item.name} style={styleImg} />
+                        <div className="charlist__name">{item.name}</div>
+                    </li>
+                </CSSTransition>
             )
         });
         return (
             <ul className="charlist__list">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }
