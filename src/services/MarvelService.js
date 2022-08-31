@@ -6,7 +6,7 @@ const useMarvelService = () => {
 
     const {loading, error, request, clearError} = useHttp();
 
-    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+    const _apiBase = 'https://api.nasa.gov/';
     const _apiKey = 'apikey=f09e10b3c42de2c120290b4a4f1abcf2';
     const _baseCharOffset = 210;
     const _baseComicsOffset = 500;
