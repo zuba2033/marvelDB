@@ -6,7 +6,7 @@ const useMarvelService = () => {
 
     const {loading, error, request, clearError} = useHttp();
 
-    const _apiBase = 'https://api.nasa.gov/';
+    const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey = 'apikey=f09e10b3c42de2c120290b4a4f1abcf2';
     const _baseCharOffset = 210;
     const _baseComicsOffset = 500;
@@ -14,13 +14,16 @@ const useMarvelService = () => {
     const getAllCharacters = async (charOffset = _baseCharOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${charOffset}&${_apiKey}`);
         const totalCharacters = res.data.total;
-        console.log(res);
         return [totalCharacters, res.data.results.map(_transformCharacterData)];
-
     }
 
     const getCharacter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        return _transformCharacterData(res.data.results[0]);
+    }
+
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?${name}&${_apiKey}`);
         return _transformCharacterData(res.data.results[0]);
     }
 
@@ -64,6 +67,7 @@ const useMarvelService = () => {
         error,
         getAllCharacters,
         getCharacter,
+        getCharacterByName,
         getComics,
         clearError,
         getSingleComic
