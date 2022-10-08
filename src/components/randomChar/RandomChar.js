@@ -1,7 +1,6 @@
 import './randomChar.scss';
 
 import { useState, useEffect } from 'react';
-import { CSSTransition } from 'react-transition-group';
 
 import mjolnir from '../../resourses/img/mjolnir.png';
 import useMarvelService from '../../services/MarvelService';
@@ -11,21 +10,17 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 const RandomChar = () => {
 
     const [char, setChar] = useState({});
-    const [loaded, setLoaded] = useState(false);
-
-    const transitionDuration = 1000;
 
     const {loading, error, getCharacter, clearError} = useMarvelService();
 
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoaded(true);
     }
 
     const updateChar = () => {
         clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        getCharacter(id)
+        getCharacter(id, 'id')
             .then(onCharLoaded)
     }
 
@@ -37,7 +32,7 @@ const RandomChar = () => {
 
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? <CSSTransition in={loaded} duration={transitionDuration} classNames='randomChar__block'><View char={char}/></CSSTransition>  : null;
+    const content = !(loading || error) ? <View char={char}/>  : null;
 
     return (
         <div className="randomChar">

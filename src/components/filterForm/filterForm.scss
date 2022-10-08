@@ -1,0 +1,38 @@
+@import '../../style/variables.scss';
+
+.filterForm {
+    margin-top: 30px;
+    padding: 25px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 15px;
+    align-items: center;
+    label {
+        display: block;
+    }
+    &__text {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 21px;
+    }
+    input {
+        margin-right: 24px;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 16px;
+        padding: 10px;
+        width: 250px;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border: none;
+        &:focus {
+            border: none;
+            outline: none;
+        }
+    }
+    &__message {
+        color: $main-color;
+    }
+}

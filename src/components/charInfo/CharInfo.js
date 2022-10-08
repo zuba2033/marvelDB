@@ -23,7 +23,7 @@ const CharInfo = (props) => {
     const getChar = (id) => {
         clearError();
         if (!id) return;
-        getCharacter(id)
+        getCharacter(id, 'id')
             .then(onCharLoaded)
     }
 

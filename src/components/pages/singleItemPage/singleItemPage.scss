@@ -1,7 +1,7 @@
 @import '../../../style/variables.scss';
 
 
-.singlecomics {
+.singleItemPage {
     margin-top: 50px;
     display: flex;
     position: relative;
@@ -34,7 +34,7 @@
         line-height: 21px;
     }
 }
-.singlecomics .singlecomics__price {
+.singleItemPage .singleItemPage__price {
     font-weight: 700;
     font-size: 24px;
     line-height: 28px;

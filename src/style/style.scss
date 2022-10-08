@@ -69,8 +69,11 @@ input::-webkit-inner-spin-button {
     margin-top: 53px;
     display: flex;
     &__rightSide {
-        position: relative;
         width: 425px;
+        position: sticky;
+        top: 20px;
+        left: 0;
+        height: 100vh;
     }
 }
 
