@@ -1,23 +1,27 @@
 import './charList.scss';
 
-import {useEffect} from 'react';
+import { useEffect, useMemo} from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
-import useMarvelService from '../../services/MarvelService';
 import { useLists } from '../../hooks/useLists.hook';
-
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = (props) => {
 
-    const {items, itemsLoaded, newItemLoading, firstLoading, offset, listEnd, onRequest, onScroll, endOfPage, itemRefs, focusOnItem} = useLists(210, 9);
-
-    const {error} = useMarvelService();
+    const { items,
+        itemsLoaded, 
+        firstLoading, 
+        offset, 
+        listEnd, 
+        onRequest, 
+        onScroll, 
+        endOfPage, 
+        itemRefs, 
+        focusOnItem,
+        process,
+        setContent } = useLists(210, 9);
 
     const transitionDuration = 1000;
-
 
     useEffect(() => {
         onRequest('Characters', offset);
@@ -81,24 +85,22 @@ const CharList = (props) => {
         )
     }
 
-    const itemList = renderItems(items);
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = firstLoading ? <Spinner/> : null;
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItems(items), firstLoading);
+        // eslint-disable-next-line
+    }, [process])
 
     const btnStyle = listEnd ? {display: 'none'} : {display: 'block'};
 
     return (
         <div className="charlist">
-            {errorMessage}
-            {spinner}
-            {itemList}
+            {elements}
             <button  
             className="button button__main button__long"
-            disabled={newItemLoading}
+            disabled={process === 'loading'}
             style={btnStyle}
             onClick={() => onRequest('Characters', offset)}>
-                <div className="inner">{newItemLoading ? 'loading...' : 'load more'}</div>
+                <div className="inner">{process === 'loading' ? 'loading...' : 'load more'}</div>
             </button>
         </div>
     )

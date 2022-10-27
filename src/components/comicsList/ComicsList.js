@@ -1,19 +1,25 @@
 import './comicsList.scss';
 
-import { useEffect} from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import useMarvelService from '../../services/MarvelService';
 import { useLists } from '../../hooks/useLists.hook';
-
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const ComicsList = () => {
 
-    const {items, newItemLoading, firstLoading, offset, listEnd, onRequest, onScroll, endOfPage, itemRefs, focusOnItem} = useLists(500, 8);
-
-    const {error} = useMarvelService();
+    const { 
+        items, 
+        firstLoading,
+        offset, 
+        listEnd, 
+        onRequest, 
+        onScroll, 
+        endOfPage, 
+        itemRefs, 
+        focusOnItem,
+        setContent,
+        process
+        } = useLists(500, 8);
 
     useEffect(() => {
         onRequest('Comics', offset, true);
@@ -72,24 +78,22 @@ const ComicsList = () => {
     }
 
 
-    const itemList = renderItems(items);
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = firstLoading ? <Spinner/> : null;
-
     const btnStyle = listEnd ? {display: 'none'} : {display: 'block'};
+
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItems(items), firstLoading);
+        // eslint-disable-next-line
+    }, [process])
 
     return (
 
         <div className="comicslist">
-            {errorMessage}
-            {spinner}
-            {itemList}
+            {elements}
             <button className="button button__main button__long"
                     style={btnStyle}
-                    disabled={newItemLoading}
+                    disabled={process === 'loading'}
                     onClick={() => onRequest('Comics', offset)}>
-                <div className="inner">{newItemLoading ? 'loading...' : 'load more'}</div>
+                <div className="inner">{process === 'loading' ? 'loading...' : 'load more'}</div>
             </button>
         </div>
     )

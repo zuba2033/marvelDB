@@ -1,29 +1,32 @@
-import { useState, useRef} from "react";
+import { useState, useRef } from "react";
 import useMarvelService from "../services/MarvelService";
+
+import ErrorMessage from '../components/errorMessage/ErrorMessage';
+import Spinner from '../components/spinner/Spinner';
 
 export const useLists = (initialOffset, itemsInList) => {
 
     const [items, setItems] = useState([]),
-        [newItemLoading, setNewItemLoading] = useState(false),
         [offset, setOffset] = useState(initialOffset),
         [listEnd, setListEnd] = useState(false),
         [endOfPage, setEndOfPage] = useState(false),
         [firstLoading, setFirstLoading] = useState(true),
         [itemsLoaded, setItemsLoaded] = useState(false);
 
-    const {getAllCharacters, getComics} = useMarvelService();
+    const {getAllCharacters, getComics, process, setProcess} = useMarvelService();
 
     const onRequest = (items, offset) => {
-        setNewItemLoading(true);
         if (items === 'Characters') {
             getAllCharacters(offset)
                 .then(onListLoaded)
-                .finally(() => setEndOfPage(false));;
+                .then(() => setProcess('confirmed'))
+                .finally(() => setEndOfPage(false));
         }
         if (items === 'Comics') {
             getComics(offset)
                 .then(onListLoaded)
-                .finally(() => setEndOfPage(false));;
+                .then(() => setProcess('confirmed'))
+                .finally(() => setEndOfPage(false));
         }
         
     }
@@ -32,11 +35,11 @@ export const useLists = (initialOffset, itemsInList) => {
         const totalItems = newItems[0];
         let ended = totalItems - offset <= itemsInList;
         setItems(items => [...items, ...newItems[1]]);
-        setNewItemLoading(false);
         setFirstLoading(false);
         setOffset(offset => offset + itemsInList);
         setListEnd(ended);
         setItemsLoaded(true);
+        setProcess('confirmed')
     }
 
     const onScroll = () => {
@@ -47,7 +50,6 @@ export const useLists = (initialOffset, itemsInList) => {
         }
     }
 
-
     const itemRefs = useRef([]);
 
     const focusOnItem = (id) => {
@@ -56,11 +58,25 @@ export const useLists = (initialOffset, itemsInList) => {
         itemRefs.current[id].focus();
     }
 
+    const setContent = (process, Component, firstLoading) => {
+        switch (process) {
+            case 'waiting':
+                return <Spinner/>;
+            case 'error':
+                return <ErrorMessage/>;
+            case 'loading':
+                return firstLoading ? <Spinner/> : <Component/>;
+            case 'confirmed':
+                return <Component/>;
+            default:
+                throw new Error('unexpected state');
+        }
+    }
+
 
     return {
         items, 
         itemsLoaded, 
-        newItemLoading, 
         offset, 
         listEnd, 
         onRequest, 
@@ -69,7 +85,10 @@ export const useLists = (initialOffset, itemsInList) => {
         endOfPage, 
         firstLoading, 
         itemRefs, 
-        focusOnItem
+        focusOnItem,
+        setContent,
+        process,
+        setProcess
     }
 
 }

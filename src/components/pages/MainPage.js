@@ -39,7 +39,7 @@ const MainPage = () => {
                 </ErrorBoundary>
                 </div>
             </div>
-            <img src={decoration} alt="" className={"decoration"} />    
+            <img src={decoration} alt="decoration" className={"decoration"} />    
         </>
     )
 }

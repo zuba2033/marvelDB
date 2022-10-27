@@ -4,17 +4,13 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
-import Skeleton from '../skeleton/Skeleton';
-import ErrorMessage from '../errorMessage/ErrorMessage';
-import Spinner from '../spinner/Spinner';
-
-
+import setContent from '../../utils/setContent';
 
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
 
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {getCharacter, clearError, process, setProcess} = useMarvelService();
 
     const onCharLoaded = (char) => {
         setChar(char);
@@ -25,6 +21,7 @@ const CharInfo = (props) => {
         if (!id) return;
         getCharacter(id, 'id')
             .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     useEffect(() => {
@@ -32,26 +29,17 @@ const CharInfo = (props) => {
         // eslint-disable-next-line
     }, [props.charId])
 
-
-    const skeleton = char || loading || error ? null : <Skeleton/> ;
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !char) ? <View char={char}/> : null;
         
     return (
         <div className="charinfo">
-            {skeleton}
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, char, View)}
         </div>
     )
-
 }
 
-const View = ({char}) => {
+const View = ({data}) => {
 
-    const {thumbnail, name, description, homepage, wiki, comics} = char;
+    const {thumbnail, name, description, homepage, wiki, comics} = data;
 
     let comicsListItems;
     if (comics.length === 0) {

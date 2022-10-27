@@ -3,9 +3,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 import useMarvelService from '../../../services/MarvelService';
-
-import ErrorMessage from '../../errorMessage/ErrorMessage';
-import Spinner from '../../spinner/Spinner';
+import setContent from '../../../utils/setContent';
 import AppBanner from '../../appBanner/AppBanner';
 
 import './singleItemPage.scss';
@@ -15,10 +13,11 @@ const SingleItemPage = ({ dataType }) => {
     const { id } = useParams();
     const [data, setData] = useState(null);
 
-    const {loading, error, getSingleComic, getCharacter, clearError} = useMarvelService();
+    const {getSingleComic, getCharacter, clearError, process, setProcess} = useMarvelService();
 
     const onDataLoaded = (data) => {
         setData(data);
+        setProcess('confirmed');
     }
 
     const getComic = () => {
@@ -43,9 +42,9 @@ const SingleItemPage = ({ dataType }) => {
         // eslint-disable-next-line
     }, [id]);
 
-    const ComicPageLayout = ({comic}) => {
+    const ComicPageLayout = ({data}) => {
 
-        const { thumbnail, title, description, pageCount, price, language} = comic;
+        const { thumbnail, title, description, pageCount, price, language } = data;
 
         return (
             <>  
@@ -72,9 +71,9 @@ const SingleItemPage = ({ dataType }) => {
         )
     }
 
-    const CharPageLayout = ({char}) => {
+    const CharPageLayout = ({data}) => {
 
-        const { thumbnail, name, description} = char;
+        const { thumbnail, name, description} = data;
 
         return (
             <>
@@ -98,22 +97,17 @@ const SingleItemPage = ({ dataType }) => {
 
     let layout;
     if (dataType === 'comics') {
-        layout = <ComicPageLayout comic={data}/>
+        layout = ComicPageLayout;
     } else if (dataType === 'character') {
-        layout = <CharPageLayout char={data}/>
+        layout = CharPageLayout;
     }
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !data) ? layout : null;
 
     return (
         <>
             <AppBanner/>
             <div className="singleItemPage">
-                {errorMessage}
-                {spinner}
-                {content}
+                {setContent(process, data, layout)}
             </div>
         </>
 
