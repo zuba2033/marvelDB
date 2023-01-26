@@ -7,6 +7,7 @@ In this project used:
 * react
 * create-react-app
 * react-transition-group, CSSTransition
+* formik
 
 Run this project locally! 
 Just do:
